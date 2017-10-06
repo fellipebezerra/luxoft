@@ -6,22 +6,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import br.com.luxoft.model.InstrumentPriceModifier;
 import br.com.luxoft.repository.InstrumentPriceModifierDTO;
 
-public class caculatorServiceImp implements Runnable{
-
-	@Autowired
-	private InstrumentPriceModifierDTO instrumentPriceModifierDTO;
+public class CaculatorServiceImp implements Runnable{
 
 	@SuppressWarnings("resource")
 	@Override
@@ -36,8 +28,8 @@ public class caculatorServiceImp implements Runnable{
 
 				br = new BufferedReader(new FileReader(arquivo));
 				while ((line = br.readLine()) != null) {
-					BigDecimal inValue;
-					BigDecimal value;
+					BigDecimal inValue = null;
+					BigDecimal value = null;
 					String[] proced = line.split(cvsSplitBy);
 					System.out.println("IN: "+proced[0]);
 					SimpleDateFormat simpleFormat = new SimpleDateFormat("dd-MMM-yyyy");
@@ -54,17 +46,52 @@ public class caculatorServiceImp implements Runnable{
 					}
 					else
 					{
-						inValue = instrumentPriceModifierDTO.instrument(proced[0]);
-						value = new BigDecimal(proced[2]);
+						if(proced[0].equals("INSTRUMENT1")) {
+							inValue = InstrumentPriceModifierDTO.instrument(proced[0]);
+							value = new BigDecimal(proced[2]);
 
-						value = value.multiply(inValue);
-						System.out.println("Work Days");
-						System.out.println("Instrument: "+proced[0]+" Date: "+proced[1] +" New Value: "+value);
+							value = value.multiply(inValue);
+							System.out.println("Work Days");
+							System.out.println("Instrument: "+proced[0]+" Date: "+proced[1] +" New Value: "+value);
+						}
+						
+						
+						else if(proced[0].equals("INSTRUMENT2")) {	
+							String november = "2014-11";
+							Date Nov = new SimpleDateFormat("yyyy-MM").parse(november);
+							Calendar cal1 = Calendar.getInstance();
+							cal1.setTime(Nov);
+							if ((data.get(Calendar.MONTH) == 10) && (data.get(Calendar.YEAR) == (cal1.get(Calendar.YEAR)))){
+								inValue = InstrumentPriceModifierDTO.instrument(proced[0]);
+								value = new BigDecimal(proced[2]);
+								value = value.multiply(inValue);
+								System.out.println("Work Days");
+								System.out.println("Instrument: "+proced[0]+" Date: "+proced[1] +" New Value: "+value);
+							} else{
+								System.out.println("Work Days");
+								System.out.println("Instrument: "+proced[0]+" Date: "+proced[1] +" New Value: "+proced[2]);
+							}							
+						}else if (proced[0].equals("INSTRUMENT3")){
+							String november = "2017";
+							Date Nov = new SimpleDateFormat("yyyy").parse(november);
+							Calendar cal1 = Calendar.getInstance();
+							cal1.setTime(Nov);
+							if ((data.get(Calendar.MONTH) == 0) && (data.get(Calendar.YEAR) == (cal1.get(Calendar.YEAR)))){
+								value = new BigDecimal(proced[2]);
+								inValue = InstrumentPriceModifierDTO.instrument(proced[0]);
+								value = value.multiply(inValue).add(value);
+								System.out.println("Work Days");
+								System.out.println("Instrument: "+proced[0]+" Date: "+proced[1] +" New Value: "+value);
+							} else{
+								System.out.println("Work Days");
+								System.out.println("Instrument: "+proced[0]+" Date: "+proced[1] +" New Value: "+proced[2]);
+							}
+						}else{
+							System.out.println("Work Days");
+							System.out.println("Instrument: "+proced[0]+" Date: "+proced[1] +" New Value: "+proced[2]);
+						}							
 					}
 				}
-
-
-
 			} catch (FileNotFoundException e) {			
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -82,6 +109,7 @@ public class caculatorServiceImp implements Runnable{
 				e.printStackTrace();
 			}
 		}
+
+
 	}
-	
 }
