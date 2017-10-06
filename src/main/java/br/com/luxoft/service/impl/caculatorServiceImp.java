@@ -82,24 +82,6 @@ public class caculatorServiceImp implements Runnable{
 				e.printStackTrace();
 			}
 		}
-
-
 	}
-	public static Calendar checaFDS(Calendar data)
-	{
-		if (data.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
-		{
-			System.out.println("SUNDAY!");
-		}
-		else if (data.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
-		{
-			System.out.println("SATURDAY!");
-		}
-		else
-		{
-			System.out.println("Work Days");
-		}
-		return data;
-	}
-
+	
 }
